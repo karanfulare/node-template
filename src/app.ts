@@ -65,7 +65,6 @@ app.get("/auth/google/callback", async (req, res) => {
       redirect_uri: Config.CB,
       grant_type: "authorization_code",
     });
-    console.log(data);
     const { access_token, id_token } = data;
 
     // Use access_token or id_token to fetch user profile
@@ -75,7 +74,6 @@ app.get("/auth/google/callback", async (req, res) => {
         headers: { Authorization: `Bearer ${access_token}` },
       }
     );
-    console.log(profile);
     res.setHeader("access_token", access_token);
     // Code to handle user authentication and retrieval using the profile data
 

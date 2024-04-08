@@ -6,7 +6,6 @@ import { logger } from "../config/logger";
 import { isTokenBlacklisted } from "../utils/manageToken";
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { Config } from "../config";
-// This is just a placeholder for your actual blacklist implementation
 
 async function authenticate(
   req: Request,
@@ -25,7 +24,6 @@ async function authenticate(
   }
 
   try {
-    // Check if the token is blacklisted
     const blacklisted = await isTokenBlacklisted(token);
     if (blacklisted) {
       sendResponse(
@@ -39,17 +37,12 @@ async function authenticate(
     if (Config.JWT_SECRET) {
       const decodedToken = jwt.verify(token, Config.JWT_SECRET) as {
         _id: string;
-      }; // Assuming your JWT payload includes the user ID
-
-      // Pass the user ID to the route
-      console.log(decodedToken);
+      };
       req.body.userId = decodedToken._id;
 
-      // Token is valid, continue with next middleware
       next();
     }
   } catch (err) {
-    // logger.error("Error during token validation:", err);
     if (err instanceof TokenExpiredError) {
       const error = createHttpError(
         ERROR_CODES.INTERNAL_SERVER_ERROR,

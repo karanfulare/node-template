@@ -16,7 +16,6 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body);
       let userExists = await UserService.getUserByEmail(req.body.email);
       if (userExists) {
         sendResponse(res, ERROR_CODES.CONFLICT, false, "User already exists");
@@ -42,7 +41,6 @@ class UserController {
         admin: req.body.admin,
       });
       let createUser = await UserService.createUser(userData);
-      console.log(createUser);
       if (!createUser) {
         sendResponse(
           res,
@@ -138,7 +136,6 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body);
       const getUserExists = await UserService.getUserById(req.body.userId);
       if (getUserExists && req.body.userId !== req.params.id) {
         sendResponse(
@@ -176,7 +173,6 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body);
       const getUserExists = await UserService.getUserById(req.body.userId);
       if (getUserExists && req.body.userId !== req.params.id) {
         sendResponse(
@@ -213,7 +209,6 @@ class UserController {
     next: NextFunction
   ): Promise<void> {
     try {
-      console.log(req.body);
       const getUserExists = await UserService.getUserById(req.body.userId);
       if (!getUserExists) {
         sendResponse(
