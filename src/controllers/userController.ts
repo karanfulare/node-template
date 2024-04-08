@@ -81,7 +81,7 @@ class UserController {
             res,
             ERROR_CODES.UNAUTHORIZED,
             false,
-            "Password incorrect"
+            "Password is incorrect"
           );
           return;
         }
@@ -111,18 +111,11 @@ class UserController {
   }
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      // Client-side handling: Clear the token from client-side storage
-      // Example for clearing from local storage:
-      // localStorage.removeItem('accessToken');
-
-      // Token blacklisting (optional): Add the token to a blacklist
       await addToBlacklist(req.body.token);
 
-      // Return a success response indicating logout
-      res.json({ success: true, message: "Logout Successful" });
+      sendResponse(res, ERROR_CODES.STATUS_OK, true, "Logged out successfully");
+      return;
     } catch (err) {
-      // Handle errors if any
-      console.error("Error during logout:", err);
       const error = createHttpError(
         ERROR_CODES.INTERNAL_SERVER_ERROR,
         "Internal Server Error: "

@@ -11,6 +11,8 @@ import session from "express-session";
 import axios from "axios";
 import MongoStore from "connect-mongo";
 import { Config } from "./config";
+import swaggerUi from "swagger-ui-express";
+import specs from "./swaggerdocs";
 const app = express();
 db();
 // eslint-disable-next-line @typescript-eslint/no-misused-promises, @typescript-eslint/require-await
@@ -34,6 +36,7 @@ app.use(
     }),
   })
 );
+
 app.get("/", async (req, res, next) => {
   // return sendResponse(
   //   res,
@@ -47,12 +50,43 @@ app.get("/", async (req, res, next) => {
   );
   next(error);
 });
+/**
+ * @swagger
+ * /auth/google:
+ *   get:
+ *     summary: To login into Account using Google
+ *     description: Google sign in
+ *     security:
+ *       - HeaderAuth: []
+ *     responses:
+ *       '200':
+ *         description: User profiles retrieved successfully based on logged in user
+ *       '401':
+ *         description: Unauthorized, missing or invalid token
+ *       '500':
+ *         description: Internal server error
+ */
+
 app.get("/auth/google", (req, res) => {
   const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${Config.cID}&redirect_uri=${Config.CB}&response_type=code&scope=profile email`;
   res.redirect(url);
 });
-
-// Callback URL for handling the Google Login response
+/**
+ * @swagger
+ * /auth/google/callback:
+ *   get:
+ *     summary: Callback url to get back to original website
+ *     description: Google sign in
+ *     security:
+ *       - HeaderAuth: []
+ *     responses:
+ *       '200':
+ *         description: User profiles retrieved successfully based on logged in user
+ *       '401':
+ *         description: Unauthorized, missing or invalid token
+ *       '500':
+ *         description: Internal server error
+ */
 app.get("/auth/google/callback", async (req, res) => {
   const { code } = req.query;
 
@@ -101,5 +135,5 @@ app.use((err: HttpError, req: Request, res: Response, next: NextFunction) => {
     ],
   });
 });
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 export default app;
